@@ -1,0 +1,49 @@
+name: Build QualityScaler
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Create AI-onnx directory
+        run: |
+          mkdir AI-onnx
+
+      - name: Download AI models
+        run: |
+          curl -L -o AI-onnx/BSRGANx2_fp16.onnx "https://huggingface.co/testacda/aimodel/resolve/main/BSRGANx2_fp16.onnx?download=true"
+          curl -L -o AI-onnx/BSRGANx4_fp16.onnx "https://huggingface.co/testacda/aimodel/resolve/main/BSRGANx4_fp16.onnx?download=true"
+          curl -L -o AI-onnx/IRCNN_Lx1_fp16.onnx "https://huggingface.co/testacda/aimodel/resolve/main/IRCNN_Lx1_fp16.onnx?download=true"
+          curl -L -o AI-onnx/IRCNN_Mx1_fp16.onnx "https://huggingface.co/testacda/aimodel/resolve/main/IRCNN_Mx1_fp16.onnx?download=true"
+          curl -L -o AI-onnx/RealESRGANx4_fp16.onnx "https://huggingface.co/testacda/aimodel/resolve/main/RealESRGANx4_fp16.onnx?download=true"
+          curl -L -o AI-onnx/RealESR_Gx4_fp16.onnx "https://huggingface.co/testacda/aimodel/resolve/main/RealESR_Gx4_fp16.onnx?download=true"
+          curl -L -o AI-onnx/RealSRx4_Anime_fp16.onnx "https://huggingface.co/testacda/aimodel/resolve/main/RealSRx4_Anime_fp16.onnx?download=true"
+
+      - name: Build executable
+        run: |
+          pip install pyinstaller
+          pyinstaller --onefile QualityScaler.py
+
+      - name: Upload executable
+        uses: actions/upload-artifact@v2
+        with:
+          name: QualityScaler
+          path: dist/QualityScaler.exe
