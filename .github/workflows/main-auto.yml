@@ -1,4 +1,4 @@
-name: Build QualityScaler-auto
+name: Build QualityScaler
 
 on:
   push:
@@ -29,7 +29,9 @@ jobs:
 
       - name: Create AI-onnx directory
         run: |
-          mkdir AI-onnx
+          if (-Not (Test-Path -Path "AI-onnx")) {
+              mkdir AI-onnx
+          }
 
       - name: Download AI models
         run: |
