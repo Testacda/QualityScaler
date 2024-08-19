@@ -46,7 +46,7 @@ jobs:
       - name: Build executable
         run: |
           pip install pyinstaller
-          pyinstaller --onefile --add-data "Assets/github_logo.png;Assets" QualityScaler.py
+          pyinstaller --onefile --add-data "Assets;Assets" QualityScaler.py
 
       - name: Upload executable
         uses: actions/upload-artifact@v2
